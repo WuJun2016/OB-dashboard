@@ -19,7 +19,7 @@ export default {
 };
 </script>
 
-<template>
+<!-- <template>
   <div
     v-if="cluster"
     class="cluster-icon"
@@ -32,7 +32,6 @@ export default {
     >
       {{ cluster.badge.iconText }}
     </div>
-    <!-- eslint-disable -->
     <svg v-else-if="cluster.isLocal && !cluster.isHarvester" class="cluster-local-logo" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
       <g>
         <g>
@@ -51,14 +50,13 @@ export default {
         </g>
       </g>
     </svg>
-    <!-- eslint-enable -->
     <img
       v-else-if="cluster.providerNavLogo"
       class="cluster-os-logo"
       :src="cluster.providerNavLogo"
     >
   </div>
-</template>
+</template> -->
 
 <style lang="scss" scoped>
   .rancher-icon-fill {

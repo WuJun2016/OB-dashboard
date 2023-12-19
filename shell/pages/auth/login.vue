@@ -35,77 +35,78 @@ export default {
   },
 
   async asyncData({ route, redirect, store }) {
-    const drivers = await store.dispatch('auth/getAuthProviders');
-    const providers = sortBy(drivers.map((x) => x.id), ['id']);
+    // // const drivers = await store.dispatch('auth/getAuthProviders');
+    // // const providers = sortBy(drivers.map((x) => x.id), ['id']);
 
-    const hasLocal = providers.includes('local');
-    const hasOthers = hasLocal && !!providers.find((x) => x !== 'local');
+    // // const hasLocal = providers.includes('local');
+    // // const hasOthers = hasLocal && !!providers.find((x) => x !== 'local');
 
-    if ( hasLocal ) {
-      // Local is special and handled here so that it can be toggled
-      removeObject(providers, 'local');
-    }
+    // // if ( hasLocal ) {
+    // //   // Local is special and handled here so that it can be toggled
+    // //   removeObject(providers, 'local');
+    // // }
 
-    let firstLoginSetting, plSetting, brand;
+    // let firstLoginSetting, plSetting, brand;
 
-    // Load settings.
-    // For newer versions this will return all settings if you are somehow logged in,
-    // and just the public ones if you aren't.
-    try {
-      await store.dispatch('management/findAll', {
-        type: MANAGEMENT.SETTING,
-        opt:  {
-          load: _ALL_IF_AUTHED, url: `/v1/${ MANAGEMENT.SETTING }`, redirectUnauthorized: false
-        },
-      });
+    // // Load settings.
+    // // For newer versions this will return all settings if you are somehow logged in,
+    // // and just the public ones if you aren't.
+    // try {
+    //   await store.dispatch('management/findAll', {
+    //     type: MANAGEMENT.SETTING,
+    //     opt:  {
+    //       load: _ALL_IF_AUTHED, url: `/v1/${ MANAGEMENT.SETTING }`, redirectUnauthorized: false
+    //     },
+    //   });
 
-      firstLoginSetting = store.getters['management/byId'](MANAGEMENT.SETTING, SETTING.FIRST_LOGIN);
-      plSetting = store.getters['management/byId'](MANAGEMENT.SETTING, SETTING.PL);
-      brand = store.getters['management/byId'](MANAGEMENT.SETTING, SETTING.BRAND);
-    } catch (e) {
-      // Older versions used Norman API to get these
-      firstLoginSetting = await store.dispatch('rancher/find', {
-        type: 'setting',
-        id:   SETTING.FIRST_LOGIN,
-        opt:  { url: `/v3/settings/${ SETTING.FIRST_LOGIN }` }
-      });
+    //   firstLoginSetting = store.getters['management/byId'](MANAGEMENT.SETTING, SETTING.FIRST_LOGIN);
+    //   plSetting = store.getters['management/byId'](MANAGEMENT.SETTING, SETTING.PL);
+    //   brand = store.getters['management/byId'](MANAGEMENT.SETTING, SETTING.BRAND);
+    // } catch (e) {
+    //   // Older versions used Norman API to get these
+    //   firstLoginSetting = await store.dispatch('rancher/find', {
+    //     type: 'setting',
+    //     id:   SETTING.FIRST_LOGIN,
+    //     opt:  { url: `/v3/settings/${ SETTING.FIRST_LOGIN }` }
+    //   });
 
-      plSetting = await store.dispatch('rancher/find', {
-        type: 'setting',
-        id:   SETTING.PL,
-        opt:  { url: `/v3/settings/${ SETTING.PL }` }
-      });
+    //   plSetting = await store.dispatch('rancher/find', {
+    //     type: 'setting',
+    //     id:   SETTING.PL,
+    //     opt:  { url: `/v3/settings/${ SETTING.PL }` }
+    //   });
 
-      brand = await store.dispatch('rancher/find', {
-        type: 'setting',
-        id:   SETTING.BRAND,
-        opt:  { url: `/v3/settings/${ SETTING.BRAND }` }
-      });
-    }
+    //   brand = await store.dispatch('rancher/find', {
+    //     type: 'setting',
+    //     id:   SETTING.BRAND,
+    //     opt:  { url: `/v3/settings/${ SETTING.BRAND }` }
+    //   });
+    // }
 
-    if (plSetting.value?.length && plSetting.value !== getVendor()) {
-      setVendor(plSetting.value);
-    }
+    // if (plSetting.value?.length && plSetting.value !== getVendor()) {
+    //   setVendor(plSetting.value);
+    // }
 
-    if (brand?.value?.length && brand.value !== getBrand()) {
-      setBrand(brand.value);
-    }
+    // if (brand?.value?.length && brand.value !== getBrand()) {
+    //   setBrand(brand.value);
+    // }
 
-    let singleProvider;
+    // let singleProvider;
 
-    if (providers.length === 1) {
-      singleProvider = providers[0];
-    }
+    // if (providers.length === 1) {
+    //   singleProvider = providers[0];
+    // }
 
     return {
       vendor:             getVendor(),
-      providers,
-      hasOthers,
-      hasLocal,
-      showLocal:          !hasOthers || (route.query[LOCAL] === _FLAGGED),
-      firstLogin:         firstLoginSetting?.value === 'true',
-      singleProvider,
-      showLocaleSelector: !process.env.loginLocaleSelector || process.env.loginLocaleSelector === 'true'
+      // providers,
+      // hasOthers,
+      hasLocal:           true,
+      showLocal:          true,
+      firstLogin:         false,
+      // singleProvider,
+      // showLocaleSelector: !process.env.loginLocaleSelector || process.env.loginLocaleSelector === 'true'
+      showLocaleSelector: false
     };
   },
 
@@ -243,14 +244,14 @@ export default {
           }
         });
 
-        const user = await this.$store.dispatch('rancher/findAll', {
-          type: NORMAN.USER,
-          opt:  { url: '/v3/users?me=true', load: _MULTI }
-        });
+        // const user = await this.$store.dispatch('rancher/findAll', {
+        //   type: NORMAN.USER,
+        //   opt:  { url: '/v3/users?me=true', load: _MULTI }
+        // });
 
-        if (!!user?.[0]) {
-          this.$store.dispatch('auth/gotUser', user[0]);
-        }
+        // if (!!user?.[0]) {
+        //   this.$store.dispatch('auth/gotUser', user[0]);
+        // }
 
         if ( this.remember ) {
           this.$cookies.set(USERNAME, this.username, {
@@ -273,12 +274,7 @@ export default {
           $plugin: this.$store.$plugin
         });
 
-        if (this.firstLogin || user[0]?.mustChangePassword) {
-          this.$store.dispatch('auth/setInitialPass', this.password);
-          this.$router.push({ name: 'auth-setup' });
-        } else {
-          this.$router.replace('/');
-        }
+        this.$router.replace('/');
       } catch (err) {
         this.err = err;
         this.timedOut = null;
@@ -299,7 +295,7 @@ export default {
           {{ t('login.howdy') }}
         </p>
         <h1 class="text-center login-welcome">
-          {{ t('login.welcome', {vendor}) }}
+          {{ t('login.welcome', {vendor: '1Block.AI'}) }}
         </h1>
         <div
           class="login-messages"
@@ -323,62 +319,6 @@ export default {
           >
             {{ t('login.loginAgain') }}
           </h4>
-        </div>
-        <div
-          v-if="firstLogin"
-          class="first-login-message pl-10 pr-10"
-          :class="{'mt-30': !hasLoginMessage}"
-          data-testid="first-login-message"
-        >
-          <t
-            k="setup.defaultPassword.intro"
-            :raw="true"
-          />
-
-          <div>
-            <t
-              k="setup.defaultPassword.dockerPrefix"
-              :raw="true"
-            />
-          </div>
-          <ul>
-            <li>
-              <t
-                k="setup.defaultPassword.dockerPs"
-                :raw="true"
-              />
-            </li>
-            <li>
-              <CopyCode>
-                docker logs <u>container-id</u> 2&gt;&amp;1 | grep "Bootstrap Password:"
-              </CopyCode>
-            </li>
-          </ul>
-          <div>
-            <t
-              k="setup.defaultPassword.dockerSuffix"
-              :raw="true"
-            />
-          </div>
-
-          <br>
-          <div>
-            <t
-              k="setup.defaultPassword.helmPrefix"
-              :raw="true"
-            />
-          </div>
-          <br>
-          <CopyCode>
-            {{ kubectlCmd }}
-          </CopyCode>
-          <br>
-          <div>
-            <t
-              k="setup.defaultPassword.helmSuffix"
-              :raw="true"
-            />
-          </div>
         </div>
 
         <div
@@ -485,7 +425,7 @@ export default {
 
       <BrandImage
         class="col span-6 landscape"
-        file-name="login-landscape.svg"
+        file-name="login-landscape.jpg"
       />
     </div>
   </main>

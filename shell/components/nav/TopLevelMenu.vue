@@ -114,12 +114,8 @@ export default {
       return options.filter((opt) => {
         const filterApps = (opt.inStore === 'management' || opt.isMultiClusterApp) && opt.category !== 'configuration' && opt.category !== 'legacy';
 
-        if (this.isRancherInHarvester) {
-          return filterApps && opt.category !== 'hci';
-        } else {
-          // We expect the location of Virtualization Management to remain the same when rancher-manage-support is not enabled
-          return filterApps;
-        }
+        // We expect the location of Virtualization Management to remain the same when rancher-manage-support is not enabled
+        return filterApps;
       });
     },
 
@@ -144,6 +140,7 @@ export default {
     options() {
       const cluster = this.clusterId || this.$store.getters['defaultClusterId'];
 
+      console.log('---this.activeProducts', this.activeProducts);
       // TODO plugin routes
       const entries = this.activeProducts.map((p) => {
         // Try product-specific index first
@@ -782,7 +779,7 @@ export default {
     max-width: 200px;
     & IMG {
       object-fit: contain;
-      height: 21px;
+      height: 35px;
       max-width: 200px;
     }
   }

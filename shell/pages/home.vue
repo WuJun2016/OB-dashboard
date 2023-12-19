@@ -18,7 +18,6 @@ import PageHeaderActions from '@shell/mixins/page-actions';
 import { getVendor } from '@shell/config/private-label';
 import { mapFeature, MULTI_CLUSTER } from '@shell/store/features';
 import { BLANK_CLUSTER } from '@shell/store/store-types.js';
-import { filterOnlyKubernetesClusters, filterHiddenLocalCluster } from '@shell/utils/cluster';
 
 import { RESET_CARDS_ACTION, SET_LOGIN_ACTION } from '@shell/config/page-actions';
 
@@ -89,10 +88,6 @@ export default {
     ...mapGetters(['currentCluster', 'defaultClusterId', 'releaseNotesUrl']),
     mcm: mapFeature(MULTI_CLUSTER),
 
-    provClusters() {
-      return this.$store.getters['management/all'](CAPI.RANCHER_CLUSTER);
-    },
-
     // User can go to Cluster Management if they can see the cluster schema
     canManageClusters() {
       const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
@@ -143,10 +138,6 @@ export default {
     afterLoginRoute: mapPref(AFTER_LOGIN_ROUTE),
     homePageCards:   mapPref(HIDE_HOME_PAGE_CARDS),
 
-    readWhatsNewAlready() {
-      return readReleaseNotes(this.$store);
-    },
-
     showSetLoginBanner() {
       return this.homePageCards?.setLoginPage;
     },
@@ -155,18 +146,16 @@ export default {
       return [
         STATE,
         {
-          name:          'name',
-          labelKey:      'tableHeaders.name',
-          value:         'nameDisplay',
-          sort:          ['nameSort'],
-          canBeVariable: true,
-          getValue:      (row) => row.mgmt?.nameDisplay
+          name:     'name',
+          labelKey: 'tableHeaders.name',
+          value:    'nameDisplay',
+          sort:     ['nameSort'],
         },
         {
           label:     this.t('landing.clusters.provider'),
-          value:     'mgmt.status.provider',
+          value:     'status.provider',
           name:      'Provider',
-          sort:      ['mgmt.status.provider'],
+          sort:      ['status.provider'],
           formatter: 'ClusterProvider'
         },
         {
@@ -196,15 +185,13 @@ export default {
           formatter:    'PodsUsage',
           delayLoading: true
         },
-        // {
-        //   name:  'explorer',
-        //   label:  this.t('landing.clusters.explorer')
-        // }
       ];
     },
 
     kubeClusters() {
-      return filterHiddenLocalCluster(filterOnlyKubernetesClusters(this.provClusters || [], this.$store), this.$store);
+      console.log(this.$store.getters['management/all'](MANAGEMENT.CLUSTER));
+
+      return this.$store.getters['management/all'](MANAGEMENT.CLUSTER);
     }
   },
 
@@ -261,11 +248,6 @@ export default {
       return `${ memValues.useful }/${ memValues.total } ${ memValues.units }`;
     },
 
-    showWhatsNew() {
-      // Update the value, so that the message goes away
-      markReadReleaseNotes(this.$store);
-    },
-
     showUserPrefs() {
       this.$router.push({ name: 'prefs' });
     },
@@ -306,29 +288,6 @@ export default {
       data-testid="home-banner-graphic"
     />
     <IndentedPanel class="mt-20 mb-20">
-      <div
-        v-if="!readWhatsNewAlready"
-        class="row"
-      >
-        <div class="col span-12">
-          <Banner
-            data-testid="changelog-banner"
-            color="info whats-new"
-          >
-            <div>
-              {{ t('landing.seeWhatsNew') }}
-            </div>
-            <a
-              class="hand"
-              :href="releaseNotesUrl"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              @click.stop="showWhatsNew"
-            ><span v-clean-html="t('landing.whatsNewLink')" /></a>
-          </Banner>
-        </div>
-      </div>
-
       <div class="row home-panels">
         <div class="col main-panel">
           <div
@@ -408,7 +367,7 @@ export default {
                     </n-link>
                   </div>
                 </template>
-                <template #col:name="{row}">
+                <!-- <template #col:name="{row}">
                   <td>
                     <div class="list-cluster-name">
                       <span v-if="row.mgmt">
@@ -427,7 +386,7 @@ export default {
                       />
                     </div>
                   </td>
-                </template>
+                </template> -->
                 <template #col:cpu="{row}">
                   <td v-if="row.mgmt && cpuAllocatable(row.mgmt)">
                     {{ `${cpuAllocatable(row.mgmt)} ${t('landing.clusters.cores', {count:cpuAllocatable(row.mgmt) })}` }}
@@ -444,14 +403,6 @@ export default {
                     &mdash;
                   </td>
                 </template>
-                <!-- <template #cell:explorer="{row}">
-                  <n-link v-if="row && row.isReady" class="btn btn-sm role-primary" :to="{name: 'c-cluster', params: {cluster: row.id}}">
-                    {{ t('landing.clusters.explore') }}
-                  </n-link>
-                  <button v-else :disabled="true" class="btn btn-sm role-primary">
-                    {{ t('landing.clusters.explore') }}
-                  </button>
-                </template> -->
               </SortableTable>
             </div>
             <div

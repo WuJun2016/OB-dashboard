@@ -689,7 +689,6 @@ export default {
                 <a>{{ t('nav.userMenu.accountAndKeys', {}, true) }}</a>
               </nuxt-link>
               <nuxt-link
-                v-if="authEnabled"
                 tag="li"
                 :to="{name: 'auth-logout', query: { [LOGGED_OUT]: true }}"
                 class="user-menu-item"

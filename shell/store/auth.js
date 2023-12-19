@@ -321,16 +321,22 @@ export const actions = {
   },
 
   async login({ dispatch }, { provider, body }) {
-    const driver = await dispatch('getAuthProvider', provider);
-
     try {
-      const res = await driver.doAction('login', {
-        description:  'UI session',
-        responseType: 'cookie',
-        ...body
-      }, { redirectUnauthorized: false });
+      // const res = await driver.doAction('login', {
+      //   description:  'UI session',
+      //   responseType: 'cookie',
+      //   ...body
+      // }, { redirectUnauthorized: false });
 
-      return res;
+      await dispatch('rancher/request', {
+        url:                  '/v1-public/auth?action=login',
+        method:               'post',
+        data:                 { ...body },
+        headers:              { 'Content-Type': 'application/json' },
+        redirectUnauthorized: false,
+      }, { root: true, redirectUnauthorized: false });
+
+      return;
     } catch (err) {
       if (err._status === 401) {
         return Promise.reject(LOGIN_ERRORS.CLIENT_UNAUTHORIZED);
@@ -350,7 +356,7 @@ export const actions = {
 
     try {
       await dispatch('rancher/request', {
-        url:                  '/v3/tokens?action=logout',
+        url:                  '/v1-public/auth?action=logout',
         method:               'post',
         data:                 {},
         headers:              { 'Content-Type': 'application/json' },

@@ -143,10 +143,6 @@ export const routerOptions = {
     component: () => interopDefault(import('../pages/c/_cluster/monitoring/index.vue' /* webpackChunkName: "pages/c/_cluster/monitoring/index" */)),
     name:      'c-cluster-monitoring'
   }, {
-    path:      '/c/:cluster/neuvector',
-    component: () => interopDefault(import('../pages/c/_cluster/neuvector/index.vue' /* webpackChunkName: "pages/c/_cluster/neuvector/index" */)),
-    name:      'c-cluster-neuvector'
-  }, {
     path:      '/c/:cluster/settings',
     component: () => interopDefault(import('../pages/c/_cluster/settings/index.vue' /* webpackChunkName: "pages/c/_cluster/settings/index" */)),
     name:      'c-cluster-settings'

@@ -1,13 +1,13 @@
-import { addObject, removeObject } from '@shell/utils/array';
+import { addObject, removeObject } from "@shell/utils/array";
 
-export const state = function() {
+export const state = function () {
   return {
-    tabs:       [],
-    active:     null,
-    open:       false,
+    tabs: [],
+    active: null,
+    open: false,
     userHeight: null,
-    userWidth:  null,
-    userPin:    null,
+    userWidth: null,
+    userPin: null,
   };
 };
 
@@ -22,7 +22,7 @@ export const mutations = {
   addTab(state, tab) {
     const existing = state.tabs.find((x) => x.id === tab.id);
 
-    if ( !existing ) {
+    if (!existing) {
       addObject(state.tabs, tab);
     }
 
@@ -52,28 +52,28 @@ export const mutations = {
 
   setUserPin(state, pin) {
     state.userPin = pin;
-  }
+  },
 };
 
 export const actions = {
   close({ state, getters, commit }, id) {
     const tab = getters.byId(id);
 
-    if ( !tab ) {
+    if (!tab) {
       return;
     }
 
     let idx = state.tabs.indexOf(tab);
 
-    commit('removeTab', tab);
-    if ( idx >= state.tabs.length ) {
+    commit("removeTab", tab);
+    if (idx >= state.tabs.length) {
       idx = state.tabs.length - 1;
     }
 
-    if ( idx >= 0 ) {
-      commit('setActive', state.tabs[idx].id);
+    if (idx >= 0) {
+      commit("setActive", state.tabs[idx].id);
     } else {
-      commit('setOpen', false);
+      commit("setOpen", false);
     }
   },
 
@@ -86,10 +86,10 @@ export const actions = {
   //   attrs: { whateverTheComponent: wants }
   // }
   open({ commit }, tab) {
-    if ( !tab.id ) {
-      throw new Error('Window must have an id property');
+    if (!tab.id) {
+      throw new Error("Window must have an id property");
     }
 
-    commit('addTab', tab);
-  }
+    commit("addTab", tab);
+  },
 };

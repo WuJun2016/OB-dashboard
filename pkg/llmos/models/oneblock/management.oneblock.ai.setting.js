@@ -1,7 +1,7 @@
 import { LLMOS } from '@pkg/llmos/types/types';
 import { clone } from '@shell/utils/object';
 import { PRODUCT_NAME as HARVESTER_PRODUCT } from '../../config/product';
-import ManagementSetting from '@shell/models/management.oneblock.ai.setting';
+import ManagementSetting from '~/shell/models/management.llmos.ai.setting';
 
 export default class OBManagementSetting extends ManagementSetting {
   get detailLocation() {

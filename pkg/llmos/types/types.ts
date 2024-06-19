@@ -1,8 +1,9 @@
 export const LLMOS = {
-  DASHBOARD: 'dashboard',
-  SETTING:   'management.llmos.ai.setting',
-  MODELFILE: 'management.llmos.ai.setting',
-  CHAT:      'chat',
+  DASHBOARD: "dashboard",
+  CLUSTER: "management.cattle.io.cluster",
+  SETTING: "management.llmos.ai.setting",
+  MODELFILE: "management.llmos.ai.setting",
+  CHAT: "chat",
   // CLUSTER:         'management.cluster.ai.setting',
   // ML_CLUSTER:      'ray.io.raycluster',
   // NOTEBOOK:        'ml.llmos.ai.notebook',

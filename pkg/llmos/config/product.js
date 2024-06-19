@@ -106,26 +106,26 @@ export function init($plugin, store) {
   });
 
   // machine learning cluster page
-  basicType([CLUSTER]);
+  basicType([LLMOS.CLUSTER]);
   virtualType({
     label:      'Clusters',
     group:      'Root',
-    name:       CLUSTER,
+    name:       LLMOS.CLUSTER,
     namespaced: true,
     route:      {
       name:   `${ PRODUCT_NAME }-c-cluster-resource`,
-      params: { resource: CLUSTER }
+      params: { resource: LLMOS.CLUSTER }
     },
     exact: false
   });
-  configureType(CLUSTER, {
+  configureType(LLMOS.CLUSTER, {
     location: {
       name:   `${ PRODUCT_NAME }-c-cluster-resource`,
-      params: { resource: CLUSTER }
+      params: { resource: LLMOS.CLUSTER }
     },
-    resource:       CLUSTER,
-    resourceDetail: CLUSTER,
-    resourceEdit:   CLUSTER
+    resource:       LLMOS.CLUSTER,
+    resourceDetail: LLMOS.CLUSTER,
+    resourceEdit:   LLMOS.CLUSTER
   });
   const VERSION = {
     name:  'version',
